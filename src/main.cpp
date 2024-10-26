@@ -12,6 +12,9 @@ int main() {
     std::cout << "P3\n" << img_width << ' ' << img_height << '\n' << "255\n";
 
     for( int j = 0; j < img_height; j++ ) {
+
+        std::clog << "/rScanlines remaning: " << (img_height - j) << ' ' << std::flush;
+
         for ( int i = 0; i < img_width; i++ ) {
             
             auto r = double(i) / ( img_width-1 );
@@ -26,5 +29,7 @@ int main() {
 
         }
     }
+
+    std::clog << "\r Done. \n"
 
 }
