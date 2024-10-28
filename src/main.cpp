@@ -1,4 +1,5 @@
 #include <iostream>
+#include "../include/vector3.h"
 
 int main() {
     
@@ -30,6 +31,12 @@ int main() {
         }
     }
 
-    std::clog << "\r Done. \n"
+    std::clog << "\r Done. \n";
+
+    Vector3* vec_a = new Vector3(2.0,2.0,2.0);
+    Vector3* vec_b = new Vector3(3.0,3.0,3.0);
+
+    std::clog << Vector3::cross( *vec_a, *vec_b ) << "\n";
+
 
 }
