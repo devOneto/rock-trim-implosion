@@ -1,5 +1,6 @@
 #include <iostream>
-#include "../include/vector3.h"
+#include "color.h"
+#include "vector3.h"
 
 int main() {
     
@@ -14,29 +15,20 @@ int main() {
 
     for( int j = 0; j < img_height; j++ ) {
 
-        std::clog << "/rScanlines remaning: " << (img_height - j) << ' ' << std::flush;
+        std::clog << "/rScanlines remaning: " << (img_height - j) << '\n' << std::flush;
 
         for ( int i = 0; i < img_width; i++ ) {
-            
-            auto r = double(i) / ( img_width-1 );
-            auto g = double(j) / ( img_height-1 );
-            auto b = 0.0;
 
-            int ir = int(255.999 * r);
-            int ig = int(255.999 * g);
-            int ib = int(255.999 * b);
+            Color* pixel_color = new Color();
+            pixel_color->r = double(i) / (img_width - 1);
+            pixel_color->g = double(j) / (img_height - 1);
+            pixel_color->b = 0;
 
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n'; 
+            std::cout << pixel_color->write();
 
         }
     }
 
     std::clog << "\r Done. \n";
-
-    Vector3* vec_a = new Vector3(2.0,2.0,2.0);
-    Vector3* vec_b = new Vector3(3.0,3.0,3.0);
-
-    std::clog << Vector3::cross( *vec_a, *vec_b ) << "\n";
-
 
 }
