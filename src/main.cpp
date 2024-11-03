@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ray.h"
 #include "color.h"
+#include "sphere.h"
 
 int main() {
     
@@ -32,6 +33,10 @@ int main() {
     Vector3 viewport_upper_left = camera_center - focal_direction - viewport_u/2 - viewport_v/2;
     Vector3 viewport_upper_left_center = viewport_upper_left + ( pixel_delta_u + pixel_delta_v ) * 0.5 ;
 
+    // Objects
+
+    Sphere sphere = Sphere( Vector3(0, 0, -1), 0.5 );
+
     // Render
 
     std::cout << "P3\n" << img_width << ' ' << img_height << '\n' << "255\n";
@@ -46,7 +51,7 @@ int main() {
             Vector3 ray_direction = pixel_center - camera_center; // TODO: test using a unit vector, it's fancier
 
             Ray pixel_ray = Ray( camera_center, ray_direction );
-            Color pixel_color = pixel_ray.get_color();
+            Color pixel_color = pixel_ray.get_color( sphere );
 
             std::cout << pixel_color.write();
 

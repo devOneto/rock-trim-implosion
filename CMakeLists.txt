@@ -4,4 +4,4 @@ project(RayTracingRenderer)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(program src/ray.cpp src/color.cpp src/vector3.cpp src/main.cpp)
+add_executable(program src/sphere.cpp src/ray.cpp src/color.cpp src/vector3.cpp src/main.cpp)

@@ -2,6 +2,7 @@
 #define RAY_H
 
 #include "color.h"
+#include "sphere.h"
 #include "vector3.h"
 
 class Ray {
@@ -14,8 +15,9 @@ class Ray {
     Ray();
     Ray( const Vector3& origin, const Vector3& direction );
 
-    Color get_color();
+    Color get_color( Sphere sphere );
     Vector3 at( double t );
+    bool hit_sphere( Sphere sphere );
 };
 
 #endif
