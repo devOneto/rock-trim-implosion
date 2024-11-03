@@ -1,6 +1,7 @@
 #ifndef RAY_H
 #define RAY_H
 
+#include "color.h"
 #include "vector3.h"
 
 class Ray {
@@ -13,8 +14,8 @@ class Ray {
     Ray();
     Ray( const Vector3& origin, const Vector3& direction );
 
+    Color get_color();
     Vector3 at( double t );
-
 };
 
 #endif

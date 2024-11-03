@@ -5,11 +5,11 @@ Vector3::Vector3( ) : Vector3(0,0,0) {}
 Vector3::Vector3( double x, double y, double z ) : x(x), y(y), z(z) {}
 
 Vector3 Vector3::operator + ( const Vector3& u ) const {
-    return Vector3( u.x + this->x, u.y + this->y, u.z + this->z );
+    return Vector3( this->x + u.x, this->y + u.y, this->z + u.z );
 } 
 
 Vector3 Vector3::operator - ( const Vector3& u ) const {
-    return Vector3( u.x - this->x, u.y - this->y, u.z - this->z );
+    return Vector3( this->x - u.x, this->y - u.y, this->z - u.z );
 }
 
 Vector3 Vector3::operator * ( double t ) const {
