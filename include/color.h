@@ -18,6 +18,8 @@ class Color {
 
     std::string write( );
 
+    Color operator * ( double t ) const;
+
 };
 
 #endif

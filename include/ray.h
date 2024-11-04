@@ -17,7 +17,7 @@ class Ray {
 
     Color get_color( Sphere sphere );
     Vector3 at( double t );
-    bool hit_sphere( Sphere sphere );
+    double hit_sphere( Sphere sphere );
 };
 
 #endif

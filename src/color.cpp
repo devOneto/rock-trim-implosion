@@ -5,6 +5,10 @@ Color::Color() : Color( 0, 0, 0, 1.0f ){}
 Color::Color( float r, float g, float b) : r(r), g(g), b(b), a(1.0f) {}
 Color::Color( float r, float g, float b, float a ) : r(r), g(g), b(b), a(a) {}
 
+Color Color::operator * ( double t ) const {
+    return Color( this->r * t, this->g * t, this->b * t );
+}
+
 std::string Color::write( ){
 
     int r_byte = this->r * 255.999;
