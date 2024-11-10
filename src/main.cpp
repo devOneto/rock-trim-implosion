@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include <iostream>
 #include "ray.h"
 #include "color.h"
@@ -5,6 +6,43 @@
 
 int main() {
     
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+        std::cerr << "Error initializating SDL: " << SDL_GetError() << std::endl;
+        return 0;
+    }
+
+    SDL_Window* window = SDL_CreateWindow(
+        "Rock Trim Implosion",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        800,
+        600,
+        SDL_WINDOW_SHOWN
+    );
+
+    if ( window == nullptr ) {
+        std::cerr << "Error opening the window: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 0;
+    }
+
+    bool is_running = true;
+    SDL_Event event;
+
+    while ( is_running ) {
+
+        while(SDL_PollEvent(&event)) {
+            if( event.type == SDL_QUIT ) {
+                is_running = false;
+            }
+        }
+
+    }
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
+
     // Image
 
     int img_width, img_height;
