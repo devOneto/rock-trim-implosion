@@ -6,49 +6,12 @@
 
 int main() {
     
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-        std::cerr << "Error initializating SDL: " << SDL_GetError() << std::endl;
-        return 0;
-    }
-
-    SDL_Window* window = SDL_CreateWindow(
-        "Rock Trim Implosion",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
-        SDL_WINDOW_SHOWN
-    );
-
-    if ( window == nullptr ) {
-        std::cerr << "Error opening the window: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return 0;
-    }
-
-    bool is_running = true;
-    SDL_Event event;
-
-    while ( is_running ) {
-
-        while(SDL_PollEvent(&event)) {
-            if( event.type == SDL_QUIT ) {
-                is_running = false;
-            }
-        }
-
-    }
-
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return 0;
-
     // Image
 
     int img_width, img_height;
-    double aspect_ratio = 16.0 / 9.0;
+    double aspect_ratio = 4.0 / 3.0;
 
-    img_width = 400;
+    img_width = 800;
     img_height = int( img_width / aspect_ratio );
     img_height = (img_height < 1) ? 1 : img_height;
 
@@ -75,27 +38,100 @@ int main() {
 
     Sphere sphere = Sphere( Vector3(0, 0, -1), 0.5 );
 
-    // Render
+    // SDL
 
-    std::cout << "P3\n" << img_width << ' ' << img_height << '\n' << "255\n";
-
-    for( int j = 0; j < img_height; j++ ) {
-
-        std::clog << "/rScanlines remaning: " << (img_height - j) << '\n' << std::flush;
-
-        for ( int i = 0; i < img_width; i++ ) {
-
-            Vector3 pixel_center = viewport_upper_left_center + (pixel_delta_u * i) + (pixel_delta_v * j);
-            Vector3 ray_direction = pixel_center - camera_center; // TODO: test using a unit vector, it's fancier
-
-            Ray pixel_ray = Ray( camera_center, ray_direction );
-            Color pixel_color = pixel_ray.get_color( sphere );
-
-            std::cout << pixel_color.write();
-
-        }
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+        std::cerr << "Error initializating SDL: " << SDL_GetError() << std::endl;
+        return 0;
     }
 
-    std::clog << "\r Done. \n";
+    SDL_Window* window = SDL_CreateWindow(
+        "Rock Trim Implosion",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        img_width,
+        img_height,
+        SDL_WINDOW_SHOWN
+    );
+
+    if ( !window ) {
+        std::cerr << "Error opening the window: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 0;
+    }
+
+    SDL_Renderer* renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED);
+
+    if ( !renderer ) {
+        std::cerr << "Error Initializing the renderer: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 0;
+    }
+
+    SDL_Texture* texture = SDL_CreateTexture(
+        renderer,
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET,
+        img_width,
+        img_height
+    );
+
+    if ( !texture ) {
+        std::cerr << "Error creating the texture: " << SDL_GetError() << std::endl;
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    Uint32* pixels = new Uint32[ img_width * img_height ];
+
+    bool is_running = true;
+    SDL_Event event;
+
+    while ( is_running ) {
+
+        while(SDL_PollEvent(&event)) {
+            if( event.type == SDL_QUIT ) {
+                is_running = false;
+            }
+        }
+
+        for( int j = 0; j < img_height; j++ ) {
+            for ( int i = 0; i < img_width; i++ ) {
+
+                Vector3 pixel_center = viewport_upper_left_center + (pixel_delta_u * i) + (pixel_delta_v * j);
+                Vector3 ray_direction = pixel_center - camera_center;
+
+                Ray pixel_ray = Ray( camera_center, ray_direction );
+                Color pixel_color = pixel_ray.get_color( sphere );
+
+                //TODO
+                pixel_color.r *= 255.999;
+                pixel_color.g *= 255.999;
+                pixel_color.b *= 255.999;
+                pixel_color.a *= 255.999;
+
+                pixels[j * img_width + i] = ((int)pixel_color.r << 24) | ((int)pixel_color.r << 16) | ((int)pixel_color.b << 8) ;
+
+            }
+        }
+
+        SDL_UpdateTexture(texture, nullptr, pixels, img_width * sizeof(Uint32));
+
+        SDL_RenderClear( renderer );
+        SDL_RenderCopy( renderer, texture, nullptr, nullptr );
+        SDL_RenderPresent( renderer );
+
+    }
+
+    // Limpa memória e encerra o SDL
+    delete[] pixels;
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
 
 }
