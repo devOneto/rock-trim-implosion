@@ -40,10 +40,7 @@ int main() {
 
     // SDL
 
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-        std::cerr << "Error initializating SDL: " << SDL_GetError() << std::endl;
-        return 0;
-    }
+    SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_Window* window = SDL_CreateWindow(
         "Rock Trim Implosion",
@@ -54,20 +51,7 @@ int main() {
         SDL_WINDOW_SHOWN
     );
 
-    if ( !window ) {
-        std::cerr << "Error opening the window: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return 0;
-    }
-
     SDL_Renderer* renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED);
-
-    if ( !renderer ) {
-        std::cerr << "Error Initializing the renderer: " << SDL_GetError() << std::endl;
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 0;
-    }
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -76,14 +60,6 @@ int main() {
         img_width,
         img_height
     );
-
-    if ( !texture ) {
-        std::cerr << "Error creating the texture: " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
 
     Uint32* pixels = new Uint32[ img_width * img_height ];
 
