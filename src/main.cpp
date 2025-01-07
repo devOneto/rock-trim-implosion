@@ -36,7 +36,8 @@ int main() {
 
     // Objects
 
-    Sphere sphere = Sphere( Vector3(0, 0, -1), 0.5 );
+    Sphere* sphere = new Sphere( Vector3(-.5, 0, -1), 0.5 );
+    Sphere* sphereB = new Sphere( Vector3(.5, 0, -1), 0.5 );
 
     // SDL
 
@@ -81,7 +82,7 @@ int main() {
                 Vector3 ray_direction = pixel_center - camera_center;
 
                 Ray pixel_ray = Ray( camera_center, ray_direction );
-                Color pixel_color = pixel_ray.get_color( sphere );
+                Color pixel_color = pixel_ray.get_color( {sphere, sphereB} );
 
                 //TODO
                 pixel_color.r *= 255.999;

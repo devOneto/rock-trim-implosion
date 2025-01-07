@@ -2,9 +2,13 @@
 #define RAY_H
 
 #include "color.h"
+#include "hit_metadata.h"
+#include "hittable_object.h"
 #include "sphere.h"
 #include "vector3.h"
 #include <cmath>
+#include <cstddef>
+#include <vector>
 
 class Ray {
   
@@ -21,13 +25,13 @@ class Ray {
         return ( this->direction * t ) + this->origin;
     }
 
-    double hit_sphere ( Sphere sphere ) {
+    double hit_sphere ( const Sphere* sphere ) {
         
-        Vector3 oc = sphere.center - this->origin;
+        Vector3 oc = sphere->center - this->origin;
 
         double a = Vector3::dot( this->direction, this->direction );
         double b = -2.0 * Vector3::dot( this->direction, oc );
-        double c = Vector3::dot(oc, oc) - sphere.radius * sphere.radius;
+        double c = Vector3::dot(oc, oc) - sphere->radius * sphere->radius;
         double d = b*b - 4 * a * c;
 
         if ( d < 0 ) return -1;
@@ -35,20 +39,40 @@ class Ray {
 
     }
 
-    Color get_color( Sphere sphere ) {
+    Color get_color( std::vector<HittableObject*> objects ) {
 
-        double hit_sphere_intensity = this->hit_sphere(sphere);
+        float last_t = 0;
+        const HittableObject* last_t_object = nullptr;
 
-        if ( hit_sphere_intensity > 0 ) {
-            Vector3 normal = ( this->at(hit_sphere_intensity) - Vector3(0,0,-1) );
-            return Color( normal.x + 1, normal.y + 1, normal.z + 1) * 0.5;
+        for( int i = 0; i < objects.size(); i++ ) {
+            
+            HittableObject* current_object = objects[i];
+
+            switch ( current_object->object_type ) {
+
+                case sphere:
+                    const Sphere* sphere = dynamic_cast<const Sphere*>(current_object);
+                    float t =  this->hit_sphere(sphere);
+                    if( t > last_t ) last_t_object = sphere;
+                break;
+                // case plane:
+
+                break;
+
+            }
         }
 
-        double a = 0.5 * ( 1.0 + this->direction.unit().y );
-        double r = (1 - a) + (a * 0.5);
-        double g = (1 - a) + (a * 0.7);
-        double b = (1 - a) + (a * 1.0);
-        return Color(r, g, b); 
+        if ( last_t_object == nullptr ) {
+            double a = 0.5 * ( 1.0 + this->direction.unit().y );
+            double r = (1 - a) + (a * 0.5);
+            double g = (1 - a) + (a * 0.7);
+            double b = (1 - a) + (a * 1.0);
+            return Color(r, g, b);
+        }
+
+        Vector3 normal = ( this->at(last_t) - Vector3(0,0,-1) );
+        return Color( normal.x + 1, normal.y + 1, normal.z + 1) * 0.5;
+         
     }
 };
 
