@@ -9,9 +9,9 @@ class Sphere {
 
     double radius;
     Vector3 center;
-    
-    Sphere();
-    Sphere( Vector3 center, double radius );
+        
+    Sphere() {}
+    Sphere( Vector3 center, double radius ) : center(center), radius(radius) {}
 
 
 };

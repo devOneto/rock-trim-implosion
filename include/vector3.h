@@ -1,6 +1,7 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
+#include <cmath>
 #include <iostream>
 
 class Vector3 {
@@ -13,29 +14,78 @@ class Vector3 {
     double y;
     double z;
 
-    Vector3();
-    Vector3(double x, double y, double z);
+    Vector3( ) : Vector3(0,0,0) {} 
+    Vector3( double x, double y, double z ) : x(x), y(y), z(z) {}
 
+    Vector3 operator + ( const Vector3& u ) const {
+        return Vector3( this->x + u.x, this->y + u.y, this->z + u.z );
+    } 
 
-    Vector3& operator *= ( double t );
-    Vector3& operator /= ( double t );
-    Vector3& operator += ( const Vector3& );
-    Vector3& operator -= ( const Vector3& );
+    Vector3 operator - ( const Vector3& u ) const {
+        return Vector3( this->x - u.x, this->y - u.y, this->z - u.z );
+    }
 
-    Vector3 unit( ) const;
-    double length() const;
-    double length_squared() const;
+    Vector3 operator * ( double t ) const {
+        return Vector3( this->x * t, this->y * t, this->z * t );
+    }
 
-    Vector3 operator * ( double t ) const;
-    Vector3 operator / ( double t ) const;
-    Vector3 operator + ( const Vector3& u ) const;
-    Vector3 operator - ( const Vector3& u ) const;
+    Vector3 operator / ( double t ) const {
+        return Vector3( this->x / t, this->y / t, this->z / t );
+    }
 
-    static double dot( const Vector3& u, const Vector3& v );
-    static Vector3 cross( const Vector3& u, const Vector3& v);
+    Vector3& operator += ( const Vector3& u ) {
+        this->x += u.x;
+        this->y += u.y;
+        this->z += u.z;
+        return *this;
+    }
+
+    Vector3& operator -= ( const Vector3& u ) {
+        this->x -= u.x;
+        this->y -= u.y;
+        this->z -= u.z;
+        return *this;
+    }
+
+    Vector3& operator *= ( double t ) {
+        this->x *= t;
+        this->y *= t;
+        this->z *= t;
+        return *this;
+    }
+
+    Vector3& operator /= ( double t ) {
+        return *this *= 1/t;
+    }
+
+    double length() const {
+        return std::sqrt(this->length_squared());
+    }
+
+    double length_squared() const {
+        return this->x * this->x + this->y * this->y + this->z * this->z;
+    }
+
+    Vector3 unit( ) const {
+        return *this / this->length();
+    }
+
+    static double dot( const Vector3& u, const Vector3& v ) {
+        return u.x * v.x + u.y * v.y + u.z * v.z;
+    }
+
+    Vector3 cross( const Vector3& u, const Vector3& v ) {
+        return Vector3( 
+            u.y * v.z - u.z * v.y,
+            u.z * v.x - u.x * v.z,
+            u.x * v.y - u.y * v.x
+        );
+    }
 
 };
 
-std::ostream& operator<<( std::ostream& os, const Vector3& v );
+std::ostream& operator << ( std::ostream& os, const Vector3& v ) {
+  return os << v.x << ' ' << v.y << ' ' << v.z;
+}
 
 #endif
