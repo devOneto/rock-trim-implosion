@@ -2,8 +2,8 @@
 #define RAY_H
 
 #include "color.h"
-#include "hit_metadata.h"
 #include "hittable_object.h"
+#include "plane.h"
 #include "sphere.h"
 #include "vector3.h"
 #include <cmath>
@@ -39,8 +39,19 @@ class Ray {
 
     }
 
+    double hit_plane( const Plane* plane ) {
+        
+        double dot_normal_direction = Vector3::dot(plane->normal, this->direction);
+
+        if ( dot_normal_direction == 0 ) return -1;
+
+        return Vector3::dot(plane->normal, plane->point_inside - this->origin) / dot_normal_direction;
+
+    }
+
     Color get_color( std::vector<HittableObject*> objects ) {
 
+        float t = 0;
         float last_t = 0;
         const HittableObject* last_t_object = nullptr;
 
@@ -50,14 +61,18 @@ class Ray {
 
             switch ( current_object->object_type ) {
 
-                case sphere:
+                case sphere: {
                     const Sphere* sphere = dynamic_cast<const Sphere*>(current_object);
-                    float t =  this->hit_sphere(sphere);
+                    t =  this->hit_sphere(sphere);
                     if( t > last_t ) last_t_object = sphere;
-                break;
-                // case plane:
-
-                break;
+                    break;
+                }
+                case plane: {
+                    const Plane* plane = dynamic_cast<const Plane*>(current_object);
+                    t = this->hit_plane(plane);
+                    if( t > last_t ) last_t_object = plane;
+                    break;
+                }
 
             }
         }
