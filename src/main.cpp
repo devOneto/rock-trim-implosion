@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "cilinder.h"
 #include "plane.h"
 #include "ray.h"
 #include "color.h"
@@ -38,9 +39,11 @@ int main() {
 
     // Objects
 
+    float cilinderz = -1;
+
     Plane* plane = new Plane( Vector3(0,1,0), Vector3(0,-.5,-1)  );
-    Sphere* sphere = new Sphere( Vector3(-.5, 0, -1), 0.5 );
-    Sphere* sphereB = new Sphere( Vector3(.5, 0, -1), 0.5 );
+    Sphere* sphere = new Sphere( Vector3(0, 0, -1), 0.5 );
+    Cilinder* cilinder = new Cilinder(.2, Vector3(0,.5,cilinderz), Vector3(0,-.5,cilinderz));
 
     // SDL
 
@@ -85,7 +88,7 @@ int main() {
                 Vector3 ray_direction = pixel_center - camera_center;
 
                 Ray pixel_ray = Ray( camera_center, ray_direction );
-                Color pixel_color = pixel_ray.get_color( {plane} );
+                Color pixel_color = pixel_ray.get_color( {cilinder} );
 
                 //TODO
                 pixel_color.r *= 255.999;

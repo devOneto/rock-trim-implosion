@@ -12,3 +12,6 @@ Linux ( Debian based ) :
 
 ### Run:
 `./build/program`
+
+
+### TODO: fonte luminosa, materiais, triangulos, tranformações e faces e interação. bvh boundary volume hierarchy

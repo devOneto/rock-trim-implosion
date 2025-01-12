@@ -2,8 +2,12 @@
 #define HITTABLE_OBJECT_H
 
 enum EHittableObjectType {
+    cone,
+    cube,
+    plane,
     sphere,
-    plane
+    cilinder,
+    triangle
 };
 
 class HittableObject { 
